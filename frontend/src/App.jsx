@@ -1,10 +1,29 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import Dashboard from "./pages/dashboard/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 function App() {
   return (
-    <div className="bg-black text-white min-h-screen flex items-center justify-center">
-      <h1 className="text-4xl text-green-500 font-bold">
-        MzansiBuilds is working
-      </h1>
-    </div>
+    <Router>
+      <div className="bg-black text-white min-h-screen">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
