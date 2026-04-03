@@ -6,7 +6,9 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       alert("User registered!");
@@ -16,27 +18,27 @@ function Register() {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl mb-4">Register</h2>
+    <form onSubmit={handleRegister} className="p-6">
+      <h2 className="text-2xl mb-4 text-green-500">Register</h2>
+
       <input
-        className="block mb-2 p-2 text-black"
+        className="block mb-2 p-2 text-black w-full"
         type="email"
         placeholder="Email"
         onChange={(e) => setEmail(e.target.value)}
       />
+
       <input
-        className="block mb-2 p-2 text-black"
+        className="block mb-2 p-2 text-black w-full"
         type="password"
         placeholder="Password"
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button
-        className="bg-green-500 px-4 py-2"
-        onClick={handleRegister}
-      >
+
+      <button className="bg-green-500 px-4 py-2 w-full">
         Register
       </button>
-    </div>
+    </form>
   );
 }
 
