@@ -4,6 +4,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import CreateProject from "./pages/projects/CreateProject";
+import ProjectDetails from "./pages/projects/ProjectDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -11,7 +12,7 @@ function App() {
     <Router>
       <div className="bg-black text-white min-h-screen">
         <Routes>
-          {/* Protected Dashboard */}
+          {/* Dashboard */}
           <Route
             path="/"
             element={
@@ -21,7 +22,7 @@ function App() {
             }
           />
 
-          {/* Protected Create Project */}
+          {/* Create Project */}
           <Route
             path="/create"
             element={
@@ -31,7 +32,17 @@ function App() {
             }
           />
 
-          {/* Public Routes */}
+          {/* Project Details (Milestones) */}
+          <Route
+            path="/project/:id"
+            element={
+              <ProtectedRoute>
+                <ProjectDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Auth */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
