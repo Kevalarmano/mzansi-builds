@@ -17,7 +17,6 @@ function ProjectDetails() {
   const [milestones, setMilestones] = useState([]);
   const [milestoneText, setMilestoneText] = useState("");
 
-  // 🔁 FETCH MILESTONES
   useEffect(() => {
     const q = collection(db, "projects", id, "milestones");
 
@@ -32,7 +31,6 @@ function ProjectDetails() {
     return () => unsubscribe();
   }, [id]);
 
-  // ➕ ADD MILESTONE
   const addMilestone = async () => {
     if (!milestoneText) return;
 
@@ -45,7 +43,6 @@ function ProjectDetails() {
     setMilestoneText("");
   };
 
-  // 🔥 AUTO COMPLETE PROJECT
   const checkIfCompleted = async () => {
     const snapshot = await getDocs(
       collection(db, "projects", id, "milestones")
@@ -60,7 +57,6 @@ function ProjectDetails() {
     }
   };
 
-  // ✅ TOGGLE COMPLETE
   const toggleMilestone = async (milestone) => {
     const ref = doc(db, "projects", id, "milestones", milestone.id);
 
@@ -68,10 +64,9 @@ function ProjectDetails() {
       completed: !milestone.completed,
     });
 
-    await checkIfCompleted(); // 🔥 KEY FEATURE
+    await checkIfCompleted();
   };
 
-  // 📊 PROGRESS %
   const completedCount = milestones.filter((m) => m.completed).length;
   const progress =
     milestones.length === 0
@@ -79,66 +74,85 @@ function ProjectDetails() {
       : Math.round((completedCount / milestones.length) * 100);
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-green-500 mb-6">
-        Project Progress 🚀
-      </h1>
+    <div className="min-h-screen bg-black text-white flex justify-center px-4 py-10">
+      <div className="w-full max-w-3xl">
 
-      {/* 📊 PROGRESS BAR */}
-      <div className="mb-6">
-        <div className="bg-gray-700 h-4 rounded">
-          <div
-            className="bg-green-500 h-4 rounded"
-            style={{ width: `${progress}%` }}
-          ></div>
+        {/* HEADER */}
+        <h1 className="text-4xl font-bold text-green-500 mb-6 text-center">
+          Project Progress 🚀
+        </h1>
+
+        {/* PROGRESS BAR */}
+        <div className="mb-8">
+          <div className="bg-gray-800 h-5 rounded-full overflow-hidden">
+            <div
+              className="bg-green-500 h-5 transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+          <p className="text-center text-sm mt-2 text-gray-400">
+            {progress}% completed
+          </p>
         </div>
-        <p className="text-sm mt-2 text-gray-400">
-          {progress}% completed
-        </p>
-      </div>
 
-      {/* ➕ ADD MILESTONE */}
-      <div className="mb-6 flex gap-2">
-        <input
-          className="p-2 text-black flex-1 rounded"
-          placeholder="New milestone..."
-          value={milestoneText}
-          onChange={(e) => setMilestoneText(e.target.value)}
-        />
+        {/* ADD MILESTONE CARD */}
+        <div className="bg-gray-900 border border-green-500/20 p-4 rounded-xl shadow-lg mb-6">
+          <h2 className="text-lg text-green-400 mb-3">Add Milestone</h2>
 
-        <button
-          onClick={addMilestone}
-          className="bg-green-500 px-4 py-2 rounded hover:bg-green-600 transition"
-        >
-          Add
-        </button>
-      </div>
-
-      {/* 📋 LIST */}
-      {milestones.length === 0 ? (
-        <p className="text-gray-400">No milestones yet</p>
-      ) : (
-        milestones.map((m) => (
-          <div
-            key={m.id}
-            className="mb-3 flex items-center gap-3 p-3 bg-gray-900 rounded shadow"
-          >
+          <div className="flex gap-2">
             <input
-              type="checkbox"
-              checked={m.completed}
-              onChange={() => toggleMilestone(m)}
+              className="flex-1 p-3 rounded bg-black text-white border border-gray-700 focus:border-green-500 outline-none"
+              placeholder="e.g. Build login system"
+              value={milestoneText}
+              onChange={(e) => setMilestoneText(e.target.value)}
             />
 
-            <span
-              className={`flex-1 ${
-                m.completed ? "line-through text-gray-500" : ""
-              }`}
+            <button
+              onClick={addMilestone}
+              className="bg-green-500 px-5 py-2 rounded hover:bg-green-600 transition font-semibold"
             >
-              {m.title}
-            </span>
+              Add
+            </button>
           </div>
-        ))
-      )}
+        </div>
+
+        {/* MILESTONE LIST */}
+        {milestones.length === 0 ? (
+          <p className="text-center text-gray-500">
+            No milestones yet — start building 🔥
+          </p>
+        ) : (
+          milestones.map((m) => (
+            <div
+              key={m.id}
+              className="flex items-center gap-3 mb-3 p-4 rounded-xl bg-gray-900 border border-gray-800 hover:border-green-500/40 transition"
+            >
+              <input
+                type="checkbox"
+                checked={m.completed}
+                onChange={() => toggleMilestone(m)}
+                className="w-5 h-5 accent-green-500"
+              />
+
+              <span
+                className={`flex-1 ${
+                  m.completed
+                    ? "line-through text-gray-500"
+                    : "text-white"
+                }`}
+              >
+                {m.title}
+              </span>
+
+              {m.completed && (
+                <span className="text-green-500 text-sm">
+                  ✔ Done
+                </span>
+              )}
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
