@@ -2,12 +2,20 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../services/firebase";
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { Link } from "react-router-dom";
 
 function Dashboard() {
   const { user } = useContext(AuthContext);
   const [projects, setProjects] = useState([]);
+  const [commentText, setCommentText] = useState({}); // ✅ per-project comments
 
   useEffect(() => {
     const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
@@ -25,6 +33,23 @@ function Dashboard() {
 
   const handleLogout = async () => {
     await signOut(auth);
+  };
+
+  // ✅ ADD COMMENT FUNCTION
+  const handleComment = async (projectId) => {
+    const text = commentText[projectId];
+    if (!text) return;
+
+    await addDoc(collection(db, "projects", projectId, "comments"), {
+      text,
+      userEmail: user.email,
+      createdAt: serverTimestamp(),
+    });
+
+    setCommentText({
+      ...commentText,
+      [projectId]: "",
+    });
   };
 
   return (
@@ -63,6 +88,28 @@ function Dashboard() {
             <p className="text-xs text-gray-500 mt-2">
               By: {project.userEmail}
             </p>
+
+            {/* ✅ COMMENT INPUT */}
+            <div className="mt-3">
+              <input
+                className="p-2 text-black w-full mb-2"
+                placeholder="Raise hand / comment..."
+                value={commentText[project.id] || ""}
+                onChange={(e) =>
+                  setCommentText({
+                    ...commentText,
+                    [project.id]: e.target.value,
+                  })
+                }
+              />
+
+              <button
+                onClick={() => handleComment(project.id)}
+                className="bg-blue-500 px-3 py-1"
+              >
+                Send
+              </button>
+            </div>
           </div>
         ))
       )}
