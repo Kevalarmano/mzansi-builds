@@ -1,53 +1,89 @@
-import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../services/firebase";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Logged in!");
-      navigate("/"); // ✅ redirect to dashboard
-    } catch (error) {
-      alert(error.message);
+      await login(email, password);
+      navigate("/");
+    } catch (err) {
+      alert("Login failed");
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
-      <form
-        onSubmit={handleLogin}
-        className="p-6 bg-gray-900 rounded-lg w-full max-w-md"
-      >
-        <h2 className="text-2xl mb-4 text-green-500 text-center">
-          Login
-        </h2>
+    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
 
-        <input
-          className="block mb-3 p-2 text-black w-full rounded"
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      {/* CARD */}
+      <div className="w-full max-w-md bg-zinc-900/80 backdrop-blur-lg border border-green-500/20 rounded-2xl p-8 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
 
-        <input
-          className="block mb-4 p-2 text-black w-full rounded"
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        {/* TITLE */}
+        <h1 className="text-3xl font-bold text-green-400 text-center mb-2">
+          Welcome Back
+        </h1>
 
-        <button className="bg-green-500 px-4 py-2 w-full rounded hover:bg-green-600">
-          Login
-        </button>
-      </form>
+        <p className="text-gray-400 text-center mb-6 text-sm">
+          Continue building in public
+        </p>
+
+        {/* FORM */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* EMAIL */}
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-3 rounded-lg bg-black border border-gray-700 focus:border-green-500 outline-none transition"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          {/* PASSWORD */}
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-3 rounded-lg bg-black border border-gray-700 focus:border-green-500 outline-none transition"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          {/* BUTTON */}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-lg font-semibold transition ${
+              loading
+                ? "bg-gray-700"
+                : "bg-green-500 hover:bg-green-600 shadow-[0_0_15px_#22c55e]"
+            }`}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        {/* FOOTER */}
+        <p className="text-sm text-gray-400 text-center mt-6">
+          Don’t have an account?{" "}
+          <Link to="/register" className="text-green-400 hover:underline">
+            Register
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
