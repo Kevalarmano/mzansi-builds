@@ -7,13 +7,13 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import CreateProject from "./pages/projects/CreateProject";
 import ProjectDetails from "./pages/projects/ProjectDetails";
 import NotFound from "./pages/NotFound";
-import Profile from "./pages/Profile";
+import Profile from "./pages/profile";
 
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 
-/* 🔥 Hide Navbar on auth pages */
+/*  Hide Navbar on auth pages */
 function Layout({ children }) {
   const location = useLocation();
 
