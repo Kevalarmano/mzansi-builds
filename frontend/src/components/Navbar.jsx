@@ -12,28 +12,24 @@ function Navbar() {
 
   return (
     <div className="w-full bg-black border-b border-gray-800 px-6 py-4 flex justify-between items-center">
+      
+      {/* LEFT = LOGO (GOES HOME) */}
       <Link to="/" className="text-green-500 text-xl font-bold">
         MzansiBuilds
       </Link>
 
+      {/* RIGHT = ACTIONS */}
       <div className="flex gap-4">
         <Link
-          to="/"
-          className="text-white hover:text-green-400 transition"
-        >
-          Dashboard
-        </Link>
-
-        <Link
           to="/create"
-          className="text-white hover:text-green-400 transition"
+          className="text-white hover:text-green-400"
         >
           New Project
         </Link>
 
         <button
           onClick={handleLogout}
-          className="text-red-400 hover:text-red-500 transition"
+          className="text-red-400 hover:text-red-500"
         >
           Logout
         </button>
