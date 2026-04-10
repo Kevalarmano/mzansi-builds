@@ -6,6 +6,7 @@ import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import CreateProject from "./pages/projects/CreateProject";
 import ProjectDetails from "./pages/projects/ProjectDetails";
+import EditProject from "./pages/projects/EditProject";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/profile";
 
@@ -13,7 +14,7 @@ import Profile from "./pages/profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 
-/*  Hide Navbar on auth pages */
+/* Hide Navbar on auth pages */
 function Layout({ children }) {
   const location = useLocation();
 
@@ -62,6 +63,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProjectDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditProject />
               </ProtectedRoute>
             }
           />

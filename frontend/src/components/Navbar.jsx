@@ -11,31 +11,35 @@ function Navbar() {
   };
 
   return (
-    <div className="w-full bg-black border-b border-gray-800 px-6 py-4 flex justify-between items-center">
+    <div className="w-full sticky top-0 z-50 backdrop-blur-md bg-black/70 border-b border-gray-800">
+      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
-      {/* LOGO → DASHBOARD */}
-      <Link
-        to="/"
-        className="text-green-500 text-2xl font-bold hover:text-green-400 transition"
-      >
-        MzansiBuilds
-      </Link>
-
-      {/* ACTIONS */}
-      <div className="flex gap-6 items-center">
+        {/* LOGO */}
         <Link
-          to="/create"
-          className="text-white hover:text-green-400 transition"
+          to="/"
+          className="text-white text-xl font-semibold tracking-tight hover:text-green-400 transition"
         >
-          New Project
+          MzansiBuilds
         </Link>
 
-        <button
-          onClick={handleLogout}
-          className="text-red-400 hover:text-red-500 transition"
-        >
-          Logout
-        </button>
+        {/* ACTIONS */}
+        <div className="flex items-center gap-6 text-sm">
+
+          <Link
+            to="/create"
+            className="text-gray-300 hover:text-green-400 transition"
+          >
+            New Project
+          </Link>
+
+          <button
+            onClick={handleLogout}
+            className="text-gray-400 hover:text-white transition"
+          >
+            Logout
+          </button>
+
+        </div>
       </div>
     </div>
   );

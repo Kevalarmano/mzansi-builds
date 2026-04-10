@@ -27,62 +27,60 @@ function Login() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
 
-      {/* CARD */}
-      <div className="w-full max-w-md bg-zinc-900/80 backdrop-blur-lg border border-green-500/20 rounded-2xl p-8 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+      <div className="w-full max-w-sm">
 
-        {/* TITLE */}
-        <h1 className="text-3xl font-bold text-green-400 text-center mb-2">
-          Welcome Back
-        </h1>
-
-        <p className="text-gray-400 text-center mb-6 text-sm">
-          Continue building in public
-        </p>
+        {/* LOGO / TITLE */}
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl font-semibold tracking-tight">
+            MzansiBuilds
+          </h1>
+          <p className="text-gray-500 text-sm mt-2">
+            Sign in to continue
+          </p>
+        </div>
 
         {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-4">
 
-          {/* EMAIL */}
           <input
             type="email"
             placeholder="Email"
-            className="w-full p-3 rounded-lg bg-black border border-gray-700 focus:border-green-500 outline-none transition"
+            className="w-full px-4 py-3 rounded-lg bg-[#111] border border-gray-800 text-sm focus:border-green-500 outline-none transition"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          {/* PASSWORD */}
           <input
             type="password"
             placeholder="Password"
-            className="w-full p-3 rounded-lg bg-black border border-gray-700 focus:border-green-500 outline-none transition"
+            className="w-full px-4 py-3 rounded-lg bg-[#111] border border-gray-800 text-sm focus:border-green-500 outline-none transition"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
 
-          {/* BUTTON */}
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-lg font-semibold transition ${
+            className={`w-full py-3 rounded-lg text-sm font-medium transition ${
               loading
-                ? "bg-gray-700"
-                : "bg-green-500 hover:bg-green-600 shadow-[0_0_15px_#22c55e]"
+                ? "bg-gray-800 text-gray-500"
+                : "bg-green-500 text-black hover:bg-green-400"
             }`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
         {/* FOOTER */}
-        <p className="text-sm text-gray-400 text-center mt-6">
+        <p className="text-sm text-gray-500 text-center mt-6">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-green-400 hover:underline">
+          <Link to="/register" className="text-white hover:text-green-400 transition">
             Register
           </Link>
         </p>
+
       </div>
     </div>
   );

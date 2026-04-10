@@ -34,7 +34,7 @@ function ProjectDetails() {
     return () => unsubscribe();
   }, [id]);
 
-  // ✅ Add milestone
+  // Add milestone
   const addMilestone = async () => {
     if (!milestoneText.trim()) return;
 
@@ -47,7 +47,7 @@ function ProjectDetails() {
     setMilestoneText("");
   };
 
-  // ✅ Toggle + smart completion check (NO extra reads)
+  // Toggle + smart completion check (NO extra reads)
   const toggleMilestone = async (milestone) => {
     const ref = doc(db, "projects", id, "milestones", milestone.id);
 
@@ -57,7 +57,7 @@ function ProjectDetails() {
       completed: updatedStatus,
     });
 
-    // 🔥 Check completion locally (fast + efficient)
+    // Check completion locally (fast + efficient)
     const updatedMilestones = milestones.map((m) =>
       m.id === milestone.id ? { ...m, completed: updatedStatus } : m
     );

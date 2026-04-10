@@ -6,11 +6,10 @@ import {
   onSnapshot,
   query,
   orderBy,
-  addDoc,
-  serverTimestamp,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { addComment, deleteProject } from "../../services/projectService";
 
 function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -36,11 +35,7 @@ function Dashboard() {
     const text = commentText[projectId];
     if (!text) return;
 
-    await addDoc(collection(db, "projects", projectId, "comments"), {
-      text,
-      userEmail: user.email,
-      createdAt: serverTimestamp(),
-    });
+    await addComment(projectId, text, user.email);
 
     setCommentText({
       ...commentText,
@@ -48,122 +43,144 @@ function Dashboard() {
     });
   };
 
+  const handleDelete = async (projectId) => {
+    const confirmDelete = confirm("Delete this project?");
+    if (!confirmDelete) return;
+
+    await deleteProject(projectId);
+  };
+
+  const handleEdit = (project) => {
+    navigate(`/edit/${project.id}`, { state: project });
+  };
+
   const activeProjects = projects.filter((p) => p.status !== "completed");
   const completedProjects = projects.filter((p) => p.status === "completed");
 
   return (
-    <div className="min-h-screen bg-black text-white px-4 py-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-black text-white px-6 py-10">
+      <div className="max-w-5xl mx-auto">
 
-        {/* HEADER (NO BUTTONS) */}
-        <h1 className="text-4xl font-bold text-green-400 mb-2">
-          Live Developer Feed
-        </h1>
-
-        <p className="text-gray-400 mb-10">
-          See what other developers are building and collaborate.
-        </p>
+        {/* HEADER */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-semibold tracking-tight text-white">
+            Developer Feed
+          </h1>
+          <p className="text-gray-500 mt-2 text-sm">
+            Explore what others are building and collaborate.
+          </p>
+        </div>
 
         {/* ACTIVE PROJECTS */}
-        <h2 className="text-2xl text-green-400 mb-6">Active Builds</h2>
+        <h2 className="text-lg text-gray-400 mb-6 uppercase tracking-wider">
+          Active Projects
+        </h2>
 
-        {activeProjects.length === 0 ? (
-          <p className="text-gray-500 mb-10 text-center">
-            No projects yet — start building in public
-          </p>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-6">
-            {activeProjects.map((p) => (
-              <motion.div
-                key={p.id}
-                whileHover={{ scale: 1.03 }}
-                className="bg-zinc-900/80 backdrop-blur-lg p-6 rounded-2xl border border-green-500/20 shadow-[0_0_20px_rgba(34,197,94,0.15)]"
-              >
-                <h2 className="text-xl text-green-300">{p.title}</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          {activeProjects.map((p) => (
+            <motion.div
+              key={p.id}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-5 hover:border-green-500/40 transition"
+            >
+              <h2 className="text-lg font-medium text-white">
+                {p.title}
+              </h2>
 
-                <p className="text-gray-400 text-sm mt-1">
-                  {p.description}
-                </p>
+              <p className="text-gray-400 text-sm mt-2">
+                {p.description}
+              </p>
 
-                <p className="text-xs text-gray-500 mt-2">
-                  By {p.userEmail}
-                </p>
+              <p className="text-xs text-gray-600 mt-3">
+                {p.userEmail}
+              </p>
 
-                <p className="text-xs text-gray-400 mt-1">
-                  Stage: {p.stage}
-                </p>
+              {/* ACTION ROW */}
+              <div className="flex justify-between items-center mt-4">
 
-                {/* VIEW PROJECT */}
                 <button
                   onClick={() => navigate(`/project/${p.id}`)}
-                  className="text-green-400 mt-4 text-sm hover:underline"
+                  className="text-sm text-green-400 hover:text-green-300 transition"
                 >
-                  View Progress →
+                  View →
                 </button>
 
-                {/* COMMENT */}
-                <div className="mt-4">
-                  <input
-                    placeholder="Comment or collaborate..."
-                    className="w-full p-2 bg-black border border-gray-700 rounded text-sm text-white"
-                    value={commentText[p.id] || ""}
-                    onChange={(e) =>
-                      setCommentText({
-                        ...commentText,
-                        [p.id]: e.target.value,
-                      })
-                    }
-                  />
+                {p.userId === user.uid && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(p)}
+                      className="text-xs text-white border border-gray-700 px-3 py-1 rounded hover:border-green-500 transition"
+                    >
+                      Edit
+                    </button>
 
-                  <button
-                    onClick={() => handleComment(p.id)}
-                    className="mt-2 text-xs bg-green-500 px-3 py-1 rounded hover:bg-green-600"
-                  >
-                    Send
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
+                    <button
+                      onClick={() => handleDelete(p.id)}
+                      className="text-xs text-white border border-gray-700 px-3 py-1 rounded hover:border-red-500 transition"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* COMMENT */}
+              <div className="mt-4">
+                <input
+                  className="w-full bg-black border border-gray-800 rounded-lg p-2 text-sm text-white focus:border-green-500 outline-none"
+                  placeholder="Write a comment..."
+                  value={commentText[p.id] || ""}
+                  onChange={(e) =>
+                    setCommentText({
+                      ...commentText,
+                      [p.id]: e.target.value,
+                    })
+                  }
+                />
+
+                <button
+                  onClick={() => handleComment(p.id)}
+                  className="mt-2 text-sm text-green-400 hover:text-green-300 transition"
+                >
+                  Send
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
         {/* CELEBRATION WALL */}
-        <h2 className="text-2xl text-white mt-16 mb-6 border-b border-gray-700 pb-2">
+        <h2 className="text-lg text-gray-400 mt-16 mb-6 uppercase tracking-wider">
           Celebration Wall
         </h2>
 
-        {completedProjects.length === 0 ? (
-          <p className="text-gray-500 text-center">
-            No completed projects yet
-          </p>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-6">
-            {completedProjects.map((p) => (
-              <motion.div
-                key={p.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-gray-900 border border-green-500/30 p-6 rounded-2xl shadow-[0_0_20px_rgba(34,197,94,0.15)] hover:shadow-[0_0_30px_rgba(34,197,94,0.25)] transition"
-              >
-                <h2 className="text-xl text-white font-semibold">
-                  {p.title}
-                </h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          {completedProjects.map((p) => (
+            <motion.div
+              key={p.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-[#0f0f0f] border border-green-500/20 rounded-2xl p-5"
+            >
+              <h2 className="text-lg text-white font-medium">
+                {p.title}
+              </h2>
 
-                <p className="text-gray-400 text-sm mt-2">
-                  {p.description}
-                </p>
+              <p className="text-gray-400 text-sm mt-2">
+                {p.description}
+              </p>
 
-                <p className="text-xs text-gray-500 mt-3">
-                  Built by {p.userEmail}
-                </p>
+              <p className="text-xs text-gray-600 mt-3">
+                {p.userEmail}
+              </p>
 
-                <p className="text-green-400 text-sm mt-3 font-medium">
-                  ✔ Completed
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        )}
+              <p className="text-green-400 text-xs mt-2">
+                Completed
+              </p>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );

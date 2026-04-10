@@ -13,9 +13,7 @@ function Register() {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      alert("User registered successfully!");
-
-      // Redirect to login (important UX fix)
+      alert("Account created successfully!");
       navigate("/login");
     } catch (error) {
       alert(error.message);
@@ -23,49 +21,61 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
-      <form
-        onSubmit={handleRegister}
-        className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-lg"
-      >
-        <h2 className="text-3xl font-bold text-green-500 mb-6 text-center">
-          Create Account
-        </h2>
+    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
 
-        {/* EMAIL */}
-        <input
-          className="w-full p-3 mb-4 rounded bg-black border border-gray-700 text-white focus:border-green-500 outline-none"
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      <div className="w-full max-w-sm">
 
-        {/* PASSWORD */}
-        <input
-          className="w-full p-3 mb-4 rounded bg-black border border-gray-700 text-white focus:border-green-500 outline-none"
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        {/* TITLE */}
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl font-semibold tracking-tight">
+            Create Account
+          </h1>
+          <p className="text-gray-500 text-sm mt-2">
+            Start building in public
+          </p>
+        </div>
 
-        {/* BUTTON */}
-        <button
-          className="w-full bg-green-500 py-3 rounded font-semibold hover:bg-green-600 transition active:scale-95"
-        >
-          Register
-        </button>
+        {/* FORM */}
+        <form onSubmit={handleRegister} className="space-y-4">
 
-        {/* LOGIN LINK */}
-        <p className="text-sm text-gray-400 mt-4 text-center">
+          {/* EMAIL */}
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full px-4 py-3 rounded-lg bg-[#111] border border-gray-800 text-sm focus:border-green-500 outline-none transition"
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          {/* PASSWORD */}
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-3 rounded-lg bg-[#111] border border-gray-800 text-sm focus:border-green-500 outline-none transition"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          {/* BUTTON */}
+          <button
+            className="w-full py-3 rounded-lg text-sm font-medium bg-green-500 text-black hover:bg-green-400 transition"
+          >
+            Create Account
+          </button>
+        </form>
+
+        {/* FOOTER */}
+        <p className="text-sm text-gray-500 text-center mt-6">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-green-400 hover:underline"
+            className="text-white hover:text-green-400 transition"
           >
-            Login
+            Sign in
           </Link>
         </p>
-      </form>
+
+      </div>
     </div>
   );
 }
