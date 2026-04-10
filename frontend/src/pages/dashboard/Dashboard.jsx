@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { signOut } from "firebase/auth";
-import { auth, db } from "../../services/firebase";
+import { db } from "../../services/firebase";
 import {
   collection,
   onSnapshot,
@@ -10,7 +9,7 @@ import {
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 function Dashboard() {
@@ -32,10 +31,6 @@ function Dashboard() {
 
     return () => unsubscribe();
   }, []);
-
-  const handleLogout = async () => {
-    await signOut(auth);
-  };
 
   const handleComment = async (projectId) => {
     const text = commentText[projectId];
@@ -60,28 +55,14 @@ function Dashboard() {
     <div className="min-h-screen bg-black text-white px-4 py-8">
       <div className="max-w-6xl mx-auto">
 
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-10">
-          <h1 className="text-4xl font-bold text-green-400">
-            MzansiBuilds
-          </h1>
+        {/* HEADER (NO BUTTONS) */}
+        <h1 className="text-4xl font-bold text-green-400 mb-2">
+          Live Developer Feed
+        </h1>
 
-          <div className="flex gap-3">
-            <Link
-              to="/create"
-              className="bg-green-500 px-5 py-2 rounded-lg hover:bg-green-600 shadow-[0_0_15px_#22c55e]"
-            >
-              + New Project
-            </Link>
-
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 px-5 py-2 rounded-lg hover:bg-red-600"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
+        <p className="text-gray-400 mb-10">
+          See what other developers are building and collaborate.
+        </p>
 
         {/* ACTIVE PROJECTS */}
         <h2 className="text-2xl text-green-400 mb-6">Active Builds</h2>
@@ -108,19 +89,11 @@ function Dashboard() {
                   By {p.userEmail}
                 </p>
 
-                {/* STAGE */}
                 <p className="text-xs text-gray-400 mt-1">
                   Stage: {p.stage}
                 </p>
 
-                {/* PROGRESS */}
-                <div className="mt-4 bg-gray-800 h-2 rounded-full">
-                  <div
-                    className="bg-green-500 h-2 rounded-full transition-all duration-700 shadow-[0_0_10px_#22c55e]"
-                    style={{ width: `${p.progress || 0}%` }}
-                  />
-                </div>
-
+                {/* VIEW PROJECT */}
                 <button
                   onClick={() => navigate(`/project/${p.id}`)}
                   className="text-green-400 mt-4 text-sm hover:underline"
@@ -131,8 +104,8 @@ function Dashboard() {
                 {/* COMMENT */}
                 <div className="mt-4">
                   <input
-                    placeholder="Comment..."
-                    className="w-full p-2 bg-black border border-gray-700 rounded text-sm"
+                    placeholder="Comment or collaborate..."
+                    className="w-full p-2 bg-black border border-gray-700 rounded text-sm text-white"
                     value={commentText[p.id] || ""}
                     onChange={(e) =>
                       setCommentText({
@@ -144,7 +117,7 @@ function Dashboard() {
 
                   <button
                     onClick={() => handleComment(p.id)}
-                    className="mt-2 text-xs bg-green-500 px-3 py-1 rounded"
+                    className="mt-2 text-xs bg-green-500 px-3 py-1 rounded hover:bg-green-600"
                   >
                     Send
                   </button>
@@ -154,8 +127,8 @@ function Dashboard() {
           </div>
         )}
 
-        {/* 🎉 CELEBRATION WALL */}
-        <h2 className="text-2xl text-yellow-400 mt-16 mb-6">
+        {/* CELEBRATION WALL */}
+        <h2 className="text-2xl text-white mt-16 mb-6 border-b border-gray-700 pb-2">
           Celebration Wall
         </h2>
 
@@ -170,9 +143,9 @@ function Dashboard() {
                 key={p.id}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-yellow-500/10 border border-yellow-500/40 p-6 rounded-2xl shadow-[0_0_25px_rgba(250,204,21,0.2)]"
+                className="bg-gray-900 border border-green-500/30 p-6 rounded-2xl shadow-[0_0_20px_rgba(34,197,94,0.15)] hover:shadow-[0_0_30px_rgba(34,197,94,0.25)] transition"
               >
-                <h2 className="text-xl text-yellow-300 font-semibold">
+                <h2 className="text-xl text-white font-semibold">
                   {p.title}
                 </h2>
 
@@ -184,7 +157,7 @@ function Dashboard() {
                   Built by {p.userEmail}
                 </p>
 
-                <p className="text-green-400 text-sm mt-2">
+                <p className="text-green-400 text-sm mt-3 font-medium">
                   ✔ Completed
                 </p>
               </motion.div>
