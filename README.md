@@ -47,7 +47,7 @@ The platform enables developers to:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend:** React (Vite)
 - **Styling:** Tailwind CSS
@@ -75,9 +75,8 @@ src/
 
 ##  Setup Instructions
 
-### 1. Clone the repository
+1. Clone the repository
 
-```bash
 git clone https://github.com/Kevalarmano/mzansi-builds.git
 cd mzansi-builds/frontend
 
