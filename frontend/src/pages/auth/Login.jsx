@@ -75,7 +75,7 @@ function Login() {
 
         {/* FOOTER */}
         <p className="text-sm text-gray-500 text-center mt-6">
-          Don’t have an account?{" "}
+          Dont have an account?{" "}
           <Link to="/register" className="text-white hover:text-green-400 transition">
             Register
           </Link>

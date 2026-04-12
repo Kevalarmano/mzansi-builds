@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 // Pages
 import Login from "./pages/auth/Login";
@@ -10,11 +10,16 @@ import EditProject from "./pages/projects/EditProject";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/profile";
 
+// New Pages
+import MyProjects from "./pages/feed/MyProjects";
+import Community from "./pages/feed/Community";
+import Celebration from "./pages/feed/Celebration";
+
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 
-/* Hide Navbar on auth pages */
+/* Layout wrapper */
 function Layout({ children }) {
   const location = useLocation();
 
@@ -39,9 +44,12 @@ function App() {
       <Layout>
         <Routes>
 
-          {/* Protected Routes */}
+          {/* Redirect root → home */}
+          <Route path="/" element={<Navigate to="/home" />} />
+
+          {/* HOME (Dashboard) */}
           <Route
-            path="/"
+            path="/home"
             element={
               <ProtectedRoute>
                 <Dashboard />
@@ -49,6 +57,35 @@ function App() {
             }
           />
 
+          {/* NEW STRUCTURED PAGES */}
+          <Route
+            path="/my"
+            element={
+              <ProtectedRoute>
+                <MyProjects />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/community"
+            element={
+              <ProtectedRoute>
+                <Community />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/celebration"
+            element={
+              <ProtectedRoute>
+                <Celebration />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* PROJECT ROUTES */}
           <Route
             path="/create"
             element={
@@ -85,7 +122,7 @@ function App() {
             }
           />
 
-          {/* Auth Routes */}
+          {/* AUTH */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
