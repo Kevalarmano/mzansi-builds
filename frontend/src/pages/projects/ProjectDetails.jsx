@@ -55,7 +55,8 @@ function ProjectDetails() {
   // PROGRESS CALCULATION
   const completedCount = milestones.filter((m) => m.completed).length;
   const totalCount = milestones.length;
-  const progress = totalCount === 0 ? 0 : (completedCount / totalCount) * 100;
+  const progress =
+    totalCount === 0 ? 0 : (completedCount / totalCount) * 100;
 
   // ADD MILESTONE
   const addMilestone = async () => {
@@ -70,13 +71,35 @@ function ProjectDetails() {
     setMilestoneText("");
   };
 
-  // TOGGLE MILESTONE
+  // 🔥 TOGGLE MILESTONE + UPDATE PROJECT STATUS
   const toggleMilestone = async (milestone) => {
     const ref = doc(db, "projects", id, "milestones", milestone.id);
 
+    // 1. Update milestone
     await updateDoc(ref, {
       completed: !milestone.completed,
     });
+
+    // 2. Simulate updated milestones locally
+    const updatedMilestones = milestones.map((m) =>
+      m.id === milestone.id
+        ? { ...m, completed: !milestone.completed }
+        : m
+    );
+
+    const allCompleted =
+      updatedMilestones.length > 0 &&
+      updatedMilestones.every((m) => m.completed);
+
+    // 3. Update PROJECT STATUS
+    await updateDoc(doc(db, "projects", id), {
+      status: allCompleted ? "completed" : "active",
+    });
+
+    // OPTIONAL: celebration feedback
+    if (allCompleted) {
+      console.log("🎉 Project completed!");
+    }
   };
 
   // ADD COMMENT
@@ -148,18 +171,32 @@ function ProjectDetails() {
           </div>
 
           {/* LIST */}
+          {milestones.length === 0 && (
+            <p className="text-gray-500 text-sm">
+              No milestones yet.
+            </p>
+          )}
+
           {milestones.map((m) => (
             <div
               key={m.id}
               className="flex items-center gap-3 mb-2"
             >
+              {/* ✅ GREEN CHECKBOX */}
               <input
                 type="checkbox"
                 checked={m.completed}
                 onChange={() => toggleMilestone(m)}
+                className="accent-green-500 w-4 h-4"
               />
 
-              <span className={`text-sm ${m.completed ? "line-through text-gray-500" : ""}`}>
+              <span
+                className={`text-sm ${
+                  m.completed
+                    ? "line-through text-gray-500"
+                    : ""
+                }`}
+              >
                 {m.title}
               </span>
             </div>
@@ -180,8 +217,12 @@ function ProjectDetails() {
                 key={c.id}
                 className="bg-black border border-gray-800 p-3 rounded-lg"
               >
-                <p className="text-green-400 text-xs">{c.userEmail}</p>
-                <p className="text-gray-300 text-sm">{c.text}</p>
+                <p className="text-green-400 text-xs">
+                  {c.userEmail}
+                </p>
+                <p className="text-gray-300 text-sm">
+                  {c.text}
+                </p>
               </div>
             ))}
           </div>
