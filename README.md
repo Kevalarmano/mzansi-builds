@@ -78,7 +78,7 @@ src/
 1. Clone the repository
 
 git clone https://github.com/Kevalarmano/mzansi-builds.git
-cd mzansi-builds/frontend
+cd frontend
 
 2. Install dependencies
 npm install
